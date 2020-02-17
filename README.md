@@ -45,6 +45,7 @@ the Teams service needs to call into the bot.
 
 1) Update the `.env` configuration for the bot to use the Microsoft App Id and App Password from the Bot Framework registration. (Note the App Password is referred to as the "client secret" in the azure portal and you can always create a new client secret anytime.)
 
+1) Update Power Automate API in calluser.js
 
 1) Run your bot at the command line:
 

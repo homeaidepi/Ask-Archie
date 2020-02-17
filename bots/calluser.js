@@ -7,7 +7,7 @@ const {
     ActionTypes
 } = require('botbuilder');
 const request = require('request');
-const automate_url = "https://prod-80.westus.logic.azure.com:443/workflows/e6e84bb1f9e44c7e883068fdd922c3a1/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=snSGwlZiWX9QnYtaPyLgrWamp77valTMiVundaszF4Q";
+const automate_url = "";
 
 class call extends TeamsActivityHandler {
     constructor(conversationReferences) {
