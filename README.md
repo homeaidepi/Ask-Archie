@@ -1,5 +1,5 @@
 
-# Teams Conversation Bot With Power Automate
+# Ask Archie - Teams Conversation Bot With Power Automate
 
 Bot Framework v4 Conversation Bot sample for Teams.
 
@@ -45,6 +45,10 @@ the Teams service needs to call into the bot.
 
 1) Update the `.env` configuration for the bot to use the Microsoft App Id and App Password from the Bot Framework registration. (Note the App Password is referred to as the "client secret" in the azure portal and you can always create a new client secret anytime.)
 
+    ```bash
+    export MICROSOFT_APP_ID=<your app id>
+    export MICROSOFT_APP_PASSWORD=<your app password>
+    ```
 1) Update Power Automate API in calluser.js
 
 1) Run your bot at the command line:

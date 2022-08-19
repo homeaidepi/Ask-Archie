@@ -1,13 +1,6 @@
-const {
-    TurnContext,
-    MessageFactory,
-    TeamsInfo,
-    TeamsActivityHandler,
-    CardFactory,
-    ActionTypes
-} = require('botbuilder');
-const request = require('request');
-const automate_url = "";
+import { TurnContext, MessageFactory, TeamsInfo, TeamsActivityHandler } from 'botbuilder';
+import { memberVandy } from '../src/const';
+import { CardFactory } from 'botbuilder';
 
 class call extends TeamsActivityHandler {
     constructor(conversationReferences) {
@@ -23,78 +16,46 @@ class call extends TeamsActivityHandler {
 
         //When User first use this bot
         this.onMembersAdded(async (context, next) => {
-
-            const user = await TeamsInfo.getMembers(context);
+            var user = await TeamsInfo.getMembers(context);
             for (const idx in context.activity.membersAdded) {
                 if (context.activity.membersAdded[idx].id !== context.activity.recipient.id) {
-                    
-                    var option = {
-                        uri: automate_url,
-                        qs: {
-                            "mail": user[0].mail,
-                            "botid": user[0].id,
-                            "name" : user[0].givenName
-                        }
-                        // qs: {
-                        //     "mail": "user[0].mail",
-                        //     "botid": "user[0].id",
-                        //     "name" : "user[0].givenName"
-                        // }
-                      };
-                    request.post({ //update user id in bot to CDS
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        url: option.uri,
-                        body: option.qs,
-                        json: true
-                    }, function (err, res, body) {
-                        console.log(body)
-                    })
-                    await context.sendActivity('Welcome to the \'Welcome User\' Bot. This bot will introduce you to welcoming and greeting users.');
-                    await context.sendActivity('insert your bot id in CDS ');
-                    await context.sendActivity(JSON.stringify(user[0].givenName));   
-                    await context.sendActivity(JSON.stringify(user[0].mail));   
-                    await context.sendActivity(JSON.stringify(user[0].id));   
+                   let heroCard = CardFactory.heroCard(
+                        'Ask Archie the Architect',
+                        CardFactory.images(['https://user-images.githubusercontent.com/100984270/185701461-3f123b63-79ed-4aff-9a54-3ffd978bdd02.png']),
+                        CardFactory.actions([
+                            {
+                                type: 'openUrl',
+                                title: 'Getting started',
+                                value: 'https://github.com/homeaidepi/Ask-Archie/blob/main/README.md#teams-conversation-bot-with-power-automate'
+                            }
+                        ])
+                    );
+                    await context.sendActivity({ attachments: [heroCard] });
+                    await context.sendActivity(`Welcome ${context.activity.membersAdded[idx].name} to Ask Archie!`);   
+                    await context.sendActivity(`Please type your message below to Ask Archie a question.`);   
                 }
             }
-
             // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
 
         this.onMessage(async (context, next) => {
-
-            
             this.addConversationReference(context.activity);
-            const members1 = await TeamsInfo.getMembers(context);
+            var members = await TeamsInfo.getMembers(context);
 
-            await context.sendActivity("Hi," + members1[0].name + " I am IT bot");
-            console.log(members1);
+            await context.sendActivity("Hi," + members[0].name + " I am Archie the Architect bot? ");
+            console.log(members);
             // TurnContext.removeRecipientMention(context.activity);
             // await this.messageAllMembersAsync(context);
-            
         });
 
     }
 
     async messageAllMembersAsync(context) {
-        var members1 = [
-            {
-                "id":"29:1HNLPvemCsFL99qYSRopKC1pdDHxQYKSYDFniMi0eGMeqAE-O3UZHjkph7hd1gzpChwVqdHbULufOpB1IICQDAw",
-                "name":"dennis lee",
-                "objectId":"d22605da-53e5-44d6-bc96-adf79c20853a",
-                "givenName":"lee",
-                "surname":"dennis",
-                "email":"dennis.lee@sftwo.onmicrosoft.com",
-                "userPrincipalName":"dennis.lee@sftwo.onmicrosoft.com",
-                "tenantId":"6185a5f1-1b6d-4634-851d-001f1446f259",
-                "aadObjectId":"d22605da-53e5-44d6-bc96-adf79c20853a"
-            }];
+        var members = [memberVandy];
         
-        members1.forEach(async (teamMember) => {
-            const message = MessageFactory.text(`Hello ${ teamMember.givenName } ${ teamMember.surname }. I'm a Teams conversation bot.`);
-
+        members.forEach(async (teamMember) => {
+            var message = MessageFactory.text(`Hello ${ teamMember.givenName } ${ teamMember.surname }. I'm Archie the Architect bot.`);
             var ref = TurnContext.getConversationReference(context.activity);
             ref.user = teamMember;
 
@@ -106,13 +67,14 @@ class call extends TeamsActivityHandler {
                     });
                 });
         });
-        await context.sendActivity(members1[0].id);
+        await context.sendActivity(members[0].id);
     }
 
     addConversationReference(activity) {
-        const conversationReference = TurnContext.getConversationReference(activity);
+        var conversationReference = TurnContext.getConversationReference(activity);
         this.conversationReferences[conversationReference.conversation.id] = conversationReference;
     }
 }
 
-module.exports.call = call;
+const _call = call;
+export { _call as call };
