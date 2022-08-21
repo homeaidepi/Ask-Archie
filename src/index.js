@@ -1,9 +1,7 @@
 import { join } from 'path';
 import { createServer } from 'restify';
 import { BotFrameworkAdapter } from 'botbuilder';
-
-import { TeamsConversationBot } from '../bots/teamsConversationBot';
-import { call } from '../bots/calluser';
+import { chat } from '../bots/chat';
 
 // Read botFilePath and botFileSecret from .env file.
 const ENV_FILE = join(__dirname, '.env');
@@ -35,11 +33,8 @@ adapter.onTurnError = async (context, error) => {
     await context.sendActivity('To continue to run this bot, please fix the bot source code.');
 };
 
-// Create the bot that will handle incoming messages.
-const bot = new TeamsConversationBot();
-
 const conversationReferences = {};
-const callbot = new call(conversationReferences);
+const chatBot = new chat(conversationReferences);
 
 // Create HTTP server.
 const server = createServer();
@@ -51,7 +46,7 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
 server.post('/api/messages', (req, res) => {
     adapter.processActivity(req, res, async (context) => {
         // MicrosoftAppCredentials.trustServiceUrl("http://127.0.0.1:3978/api/messages")
-        await callbot.run(context);
+        await chatBot.run(context);
     });
 });
 

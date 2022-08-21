@@ -2,7 +2,9 @@ import { TurnContext, MessageFactory, TeamsInfo, TeamsActivityHandler } from 'bo
 import { memberVandy } from '../src/const';
 import { CardFactory } from 'botbuilder';
 
-class call extends TeamsActivityHandler {
+let conversation = [];
+
+class chat extends TeamsActivityHandler {
     constructor(conversationReferences) {
         super();
 
@@ -16,12 +18,11 @@ class call extends TeamsActivityHandler {
 
         //When User first use this bot
         this.onMembersAdded(async (context, next) => {
-            var user = await TeamsInfo.getMembers(context);
             for (const idx in context.activity.membersAdded) {
                 if (context.activity.membersAdded[idx].id !== context.activity.recipient.id) {
                    let heroCard = CardFactory.heroCard(
                         'Ask Archie the Architect',
-                        CardFactory.images(['https://user-images.githubusercontent.com/100984270/185701461-3f123b63-79ed-4aff-9a54-3ffd978bdd02.png']),
+                        CardFactory.images(['https://user-images.githubusercontent.com/100984270/185800062-2df9be85-dda9-40b0-b7a4-f640b5209020.png']),
                         CardFactory.actions([
                             {
                                 type: 'openUrl',
@@ -31,8 +32,8 @@ class call extends TeamsActivityHandler {
                         ])
                     );
                     await context.sendActivity({ attachments: [heroCard] });
-                    await context.sendActivity(`Welcome ${context.activity.membersAdded[idx].name} to Ask Archie!`);   
-                    await context.sendActivity(`Please type your message below to Ask Archie a question.`);   
+                    await context.sendActivity(`Hi ${context.activity.membersAdded[idx].name}, welcome to Ask Archie!`);   
+                    await context.sendActivity(`I'm Archie the Architect, please type your message below to ask me a question.`);   
                 }
             }
             // By calling next() you ensure that the next BotHandler is run.
@@ -42,32 +43,26 @@ class call extends TeamsActivityHandler {
         this.onMessage(async (context, next) => {
             this.addConversationReference(context.activity);
             var members = await TeamsInfo.getMembers(context);
+            
+            let user = members.find(member => member.id === context.activity.from.id);
+            let userInput = context.activity.text;
+            let response = `OK, ${user.name}. I understood you would like to me to "${userInput}"... one moment while I see if I can help you.`;
 
-            await context.sendActivity("Hi," + members[0].name + " I am Archie the Architect bot? ");
-            console.log(members);
-            // TurnContext.removeRecipientMention(context.activity);
-            // await this.messageAllMembersAsync(context);
+            conversation.push(response);
+            await giveStatus(MessageFactory.text(response));
         });
-
     }
 
-    async messageAllMembersAsync(context) {
-        var members = [memberVandy];
+    async attemptLift(user, userInput, context) {
         
-        members.forEach(async (teamMember) => {
-            var message = MessageFactory.text(`Hello ${ teamMember.givenName } ${ teamMember.surname }. I'm Archie the Architect bot.`);
-            var ref = TurnContext.getConversationReference(context.activity);
-            ref.user = teamMember;
+    }
 
-            await context.adapter.createConversation(ref,
-                async (t1) => {
-                    const ref2 = TurnContext.getConversationReference(t1.activity);
-                    await t1.adapter.continueConversation(ref2, async (t2) => {
-                        await t2.sendActivity(message);
-                    });
-                });
-        });
-        await context.sendActivity(members[0].id);
+    async giveStatus(status, context) {
+        return await context.sendActivity(MessageFactory.text(status));
+    }
+
+    async sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     addConversationReference(activity) {
@@ -76,5 +71,5 @@ class call extends TeamsActivityHandler {
     }
 }
 
-const _call = call;
-export { _call as call };
+const _chat = chat;
+export { _chat as chat };

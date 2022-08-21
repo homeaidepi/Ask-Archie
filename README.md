@@ -57,6 +57,7 @@ the Teams service needs to call into the bot.
     npm start
     ```
 
+http://localhost:3978/api/messages
 
 
 ### Avoiding Permission-Related Errors

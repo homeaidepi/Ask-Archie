@@ -36,7 +36,7 @@ var baseMember = {
 };
 exports.baseMember = baseMember;
 
-var memberVandy = _objectSpread(_objectSpread({}, baseUser), {}, {
+var memberVandy = _objectSpread(_objectSpread({}, baseMember), {}, {
   "businessPhones": [],
   "displayName": "Matthew Vandergrift",
   "givenName": "Matthew",
@@ -53,7 +53,7 @@ var memberVandy = _objectSpread(_objectSpread({}, baseUser), {}, {
 exports.memberVandy = memberVandy;
 
 function memberUser(botId, botName, botEmail) {
-  return _objectSpread(_objectSpread({}, baseUser), {}, {
+  return _objectSpread(_objectSpread({}, baseMember), {}, {
     botId: botId,
     botName: botName,
     botEmail: botEmail
