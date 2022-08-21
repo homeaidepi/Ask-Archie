@@ -60,4 +60,5 @@ the Teams service needs to call into the bot.
 You may encounter permission-related errors when sending a proactive message. This can often be mitigated by using `MicrosoftAppCredentials.trustServiceUrl()`. See [the documentation](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0&tabs=javascript#avoiding-401-unauthorized-errors) for more information.
 
 
-![image](https://user-images.githubusercontent.com/100984270/185701461-3f123b63-79ed-4aff-9a54-3ffd978bdd02.png)
+![image](https://user-images.githubusercontent.com/100984270/185800062-2df9be85-dda9-40b0-b7a4-f640b5209020.png)
+
